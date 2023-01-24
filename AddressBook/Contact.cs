@@ -23,4 +23,6 @@ public class Contact
 		Phone = phone;
 		Email = email;
 	}
+
+	
 }

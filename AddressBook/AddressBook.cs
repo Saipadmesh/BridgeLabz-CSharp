@@ -5,8 +5,12 @@ namespace FirstProject
     public class AddressBook
     {
         List<Contact> contacts;
+        Dictionary<string, List<Contact>> byState;
+        Dictionary<string, List<Contact>> byCity;
         public AddressBook() {
             contacts= new List<Contact>();
+            byCity= new Dictionary<string, List<Contact>>();
+            byState= new Dictionary<string, List<Contact>>();
         }
 
         public List<Contact> GetList()
@@ -17,9 +21,22 @@ namespace FirstProject
         public void Add(Contact contact)
         {
             string firstName=contact.FirstName;
-            if(!contacts.Where(contact1=>contact1.FirstName==firstName).Any())
+            string city = contact.City;
+            string state = contact.State;
+            if(!contacts.Where(contact1=>contact1.FirstName==firstName).Any()) // UC7
             {
                 contacts.Add(contact);
+
+                if (!byCity.ContainsKey(city))
+                {
+                    byCity[city] = new List<Contact>();
+                }
+                byCity[city].Add(contact);
+                if(!byState.ContainsKey(state))
+                {
+                    byState[state] = new List<Contact>();
+                }
+                byState[state].Add(contact);
             }
             else
             {
@@ -65,6 +82,76 @@ namespace FirstProject
             else
             {
                 Console.WriteLine("Contact does not exist");
+            }
+        }
+
+        public static List<Contact> Search(Dictionary<string,AddressBook> addresses, string toSearch, int option)
+        {
+            // UC8
+            List<Contact> list = new List<Contact>();
+            if(toSearch!= null)
+            {
+                if (option == 0)
+                {
+                    foreach(var addressBook in addresses.Values)
+                    {
+                        list.AddRange(addressBook.GetList().Where((contact)=>contact.City == toSearch));
+                    }
+                    return list;
+                }
+                else if (option == 1)
+                {
+                    foreach (var addressBook in addresses.Values)
+                    {
+                        list.AddRange(addressBook.GetList().Where((contact) => contact.State == toSearch));
+                    }
+                    return list;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("option");
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException("toSearch");
+            }
+            
+        }
+
+        public void ViewByState()
+        {
+            // UC9 and UC10
+            int count;
+            foreach(var state in byState)
+            {
+                count = 0;
+                Console.WriteLine(state.Key+": ");
+                foreach(var contact in state.Value)
+                {
+                    Console.WriteLine(contact.FirstName);
+                    count++;
+                }
+                Console.WriteLine("Count: "+count);
+                Console.WriteLine();
+            }
+        }
+
+        public void ViewByCity()
+        {
+            // UC9 and UC10
+            int count;
+            foreach (var city in byCity)
+            {
+                Console.WriteLine(city.Key + ": ");
+                count = 0;
+                foreach (var contact in city.Value)
+                {
+                    count++;
+                    Console.WriteLine(contact.FirstName);
+                }
+                Console.WriteLine("Count: "+count);
+                Console.WriteLine();
             }
         }
     }

@@ -7,7 +7,7 @@
             var user = new User();
             try
             {
-                user.RegisterFirstName("Sai");
+                user.RegisterFirstName("ai");
                 user.RegisterPhoneNo("91 1290489018");
             }
             catch(Exception ex)

@@ -4,6 +4,29 @@ using System.Text.RegularExpressions;
 
 namespace UserRegistration
 {
+    public enum UserExceptionVar
+    {
+        FirstName,
+        LastName,
+        PhoneNo,
+        Email,
+        Password
+    }
+    public class UserException : Exception
+    {
+        // UC12
+        private UserExceptionVar? _var = null;
+
+        public UserException() { }
+
+        public UserException(UserExceptionVar var, string message) : base(String.Format("Invalid or Empty Field: {0}\nValue is {1}",var,message))
+        {
+            _var= var;
+        }
+
+
+    }
+    
     public class User
     {
         public string? FirstName;
@@ -21,7 +44,7 @@ namespace UserRegistration
             }
             else
             {
-                throw new ArgumentException("firstName");
+                throw new UserException(UserExceptionVar.FirstName,firstName);
             }
 
         }
@@ -35,7 +58,7 @@ namespace UserRegistration
             }
             else
             {
-                throw new ArgumentException("lastName");
+                throw new UserException(UserExceptionVar.LastName, lastName);
             }
 
         }
@@ -50,7 +73,7 @@ namespace UserRegistration
             }
             else
             {
-                throw new ArgumentException("email");
+                throw new UserException(UserExceptionVar.Email, email);
             }
         }
 
@@ -63,20 +86,24 @@ namespace UserRegistration
             }
             else
             {
-                throw new ArgumentException("phoneNo");
+                throw new UserException(UserExceptionVar.PhoneNo, phoneNo);
             }
         }
 
         public void RegisterPassword(string password)
         {
-            string PasswordRegex = @"([a-z]*[A-Z]+[a-z]*[0-9]+[a-z]*[^A-Za-z0-9][a-z]*){8,}"; // doubt
-            if(Regex.IsMatch(password,PasswordRegex))
+            string MinLength = @"(.+){8,}", SpecialChar = @".*[^A-Za-z0-9].*"; // doubt
+            string UpperCase = @".*[A-Z]+.*", Numerical = @".*[0-9]+.*";
+
+            bool isValid = Regex.IsMatch(password, MinLength) && Regex.IsMatch(password,SpecialChar) && Regex.IsMatch(password,UpperCase) && Regex.IsMatch(password,Numerical);
+
+            if (isValid)
             {
                 Password = password;
             }
             else
             {
-                throw new ArgumentException("password");
+                throw new UserException(UserExceptionVar.Password,password);
             }
         }
 

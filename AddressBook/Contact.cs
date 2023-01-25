@@ -24,5 +24,11 @@ public class Contact
 		Email = email;
 	}
 
+	public override string ToString()
+	{
+		// UC11
+		return FirstName;
+	}
+
 	
 }

@@ -1,5 +1,7 @@
 ﻿
 
+using System.Runtime.Serialization.Formatters.Binary;
+
 namespace FirstProject
 {
     public class AddressBook
@@ -16,6 +18,11 @@ namespace FirstProject
         public List<Contact> GetList()
         {
             return contacts;
+        }
+
+        public void SetList(List<Contact> list)
+        {
+            contacts = list;
         }
 
         public void Add(Contact contact)
@@ -152,6 +159,60 @@ namespace FirstProject
                 }
                 Console.WriteLine("Count: "+count);
                 Console.WriteLine();
+            }
+        }
+
+        public override string ToString()
+        {
+            string toPrint = "[";
+            foreach(var p in contacts)
+            {
+                toPrint += p.ToString()+",";
+            }
+            toPrint+= "]";
+            return toPrint;
+        }
+
+        public static void PrintSortedByName(AddressBook addressBook)
+        {
+            // UC11
+            addressBook.SetList(addressBook.contacts.OrderBy((contact) => contact.FirstName).ToList());
+            Console.WriteLine(addressBook);
+        }
+
+        public static void PrintSortedByCity(AddressBook addressBook)
+        {
+            // UC12
+            addressBook.SetList(addressBook.contacts.OrderBy((contact) => contact.City).ToList());
+            Console.WriteLine(addressBook);
+        }
+
+        public static void PrintSortedByState(AddressBook addressBook)
+        {
+            // UC12
+            addressBook.SetList(addressBook.contacts.OrderBy((contact) => contact.State).ToList());
+            Console.WriteLine(addressBook);
+        }
+
+        public static void PrintSortedByPostalCode(AddressBook addressBook)
+        {
+            // UC12
+            addressBook.SetList(addressBook.contacts.OrderBy((contact) => contact.PostalCode).ToList());
+            Console.WriteLine(addressBook);
+        }
+
+        public static void WriteToFile(AddressBook addressBook, string fileName)
+        {
+            // UC13
+            try
+            {
+                string path = @"C:\Users\223089657\Desktop\Learning\C#\TestFiles\" + fileName + ".txt";
+                File.WriteAllText(path, addressBook.ToString());
+                Console.WriteLine("File written successfully");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
     }
